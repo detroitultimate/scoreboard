@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DUFL Ultimate">
+    <title>DUFL Ultimate - iPad Sideline App</title>
+    <meta name="description"
+        content="A professional Ultimate Frisbee sideline application for iPad, featuring scoreboards, ABBA gender matching, and stats tracking.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon"
+        href="https://d36m266ykvepgv.cloudfront.net/uploads/media/1VrLZjQUhV/s-264-80/dufl-email-header.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="dark-mode">
+    <div id="app" class="app-container">
+        <!-- Dashboard will be rendered here -->
+        <header class="app-header">
+            <div class="header-content">
+                <img src="dufl-header.jpg" alt="DUFL Ultimate" class="game-logo">
+                <div id="game-clock" class="game-clock">90:00</div>
+                <div class="header-actions">
+                    <button id="fullscreen-btn" class="btn"
+                        style="background: rgba(255,255,255,0.1); padding: 0.5rem 1rem;">📱</button>
+                    <button id="theme-toggle-btn" class="btn"
+                        style="background: rgba(255,255,255,0.1); padding: 0.5rem 1rem;">🌙</button>
+                    <button id="sound-toggle-btn" class="btn"
+                        style="background: rgba(255,255,255,0.1); padding: 0.5rem 1rem;">🔊</button>
+                    <button id="settings-btn" class="btn"
+                        style="background: rgba(255,255,255,0.1); padding: 0.5rem 1rem;">⚙️</button>
+                    <button id="undo-btn" class="btn"
+                        style="background: rgba(255,255,255,0.1); padding: 0.5rem 1rem;">↩️</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="app-main">
+            <section id="scoreboard-section" class="scoreboard-section">
+                <!-- Scoreboard logic here -->
+            </section>
+        </main>
+
+        <div id="settings-modal" class="modal-overlay">
+            <div class="modal-content">
+                <h2>Game Settings</h2>
+                <div class="settings-grid">
+                    <div class="settings-section">
+                        <h3>Team Customization</h3>
+                        <div class="form-group">
+                            <label>Team 1 Name & Color</label>
+                            <div class="settings-row">
+                                <input type="text" id="team-us-name" value="Team 1">
+                                <div class="color-picker-container">
+                                    <label>Presets</label>
+                                    <div class="color-presets" id="team-us-color-picker"></div>
+                                    <label>Custom</label>
+                                    <input type="color" id="team-us-custom-color" class="custom-color-input">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Team 2 Name & Color</label>
+                            <div class="settings-row">
+                                <input type="text" id="team-them-name" value="Team 2">
+                                <div class="color-picker-container">
+                                    <label>Presets</label>
+                                    <div class="color-presets" id="team-them-color-picker"></div>
+                                    <label>Custom</label>
+                                    <input type="color" id="team-them-custom-color" class="custom-color-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h3>Game Clock</h3>
+                    <div class="form-group">
+                        <label>Game Duration (minutes)</label>
+                        <input type="number" id="game-duration" value="90">
+                    </div>
+                    <div class="form-group">
+                        <label>Periods</label>
+                        <select id="game-periods">
+                            <option value="1">Single Game</option>
+                            <option value="2">Two Halves</option>
+                            <option value="4">Four Quarters</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Gender Ratio Rule</label>
+                        <select id="ratio-rule">
+                            <option value="ABBA">WFDF ABBA (Auto)</option>
+                            <option value="US_PRESCRIBED">US Prescribed (Auto)</option>
+                            <option value="FIXED_M">Fixed - 4M/3F</option>
+                            <option value="FIXED_F">Fixed - 3M/4F</option>
+                            <option value="MANUAL">Custom Sequence / Manual</option>
+                        </select>
+                    </div>
+                    <div id="ratio-sequence-group" class="form-group" style="display: none;">
+                        <label>Custom Sequence (e.g. ABBAA)</label>
+                        <input type="text" id="ratio-sequence" placeholder="AB"
+                            oninput="this.value = this.value.toUpperCase().replace(/[^AB]/g, '')">
+                    </div>
+                    <div class="form-group">
+                        <label>Ratio A Definition (e.g. 4M/3F)</label>
+                        <input type="text" id="ratio-a-def" placeholder="4M/3F">
+                    </div>
+                    <div class="form-group">
+                        <label>Ratio B Definition (e.g. 3M/4F)</label>
+                        <input type="text" id="ratio-b-def" placeholder="3M/4F">
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h3>Timer Alert Sounds</h3>
+                    <div class="form-group">
+                        <label>Sound Type</label>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <select id="timer-sound" style="flex: 1;">
+                                <option value="classic">Classic Rising Tone</option>
+                                <option value="basketball">Basketball Buzzer</option>
+                                <option value="hockey">Hockey Horn</option>
+                                <option value="whistle">Referee Whistle</option>
+                                <option value="soccer">Soccer Horn</option>
+                                <option value="electronic">Electronic Beep</option>
+                            </select>
+                            <button type="button" class="btn" onclick="previewTimerSound()"
+                                style="padding: 0.5rem 0.8rem; font-size: 0.85rem; background: var(--glass-bg);">TEST</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Volume</label>
+                        <input type="range" id="timer-volume" min="0" max="1" step="0.1" value="0.5"
+                            style="width: 100%;">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button id="save-settings-btn" class="btn btn-primary">SAVE CONFIG</button>
+                    <button id="close-settings-btn" class="btn btn-accent">CANCEL</button>
+                </div>
+            </div>
+        </div>
+
+        <nav id="mobile-nav" class="mobile-nav">
+            <!-- Navigation for portrait mode -->
+        </nav>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

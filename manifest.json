@@ -1,0 +1,21 @@
+{
+  "name": "DUFL Ultimate Frisbee",
+  "short_name": "DUFL",
+  "description": "Sideline management for Ultimate Frisbee",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0d0d12",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "https://d36m266ykvepgv.cloudfront.net/uploads/media/1VrLZjQUhV/s-264-80/dufl-email-header.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "https://d36m266ykvepgv.cloudfront.net/uploads/media/1VrLZjQUhV/s-264-80/dufl-email-header.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
