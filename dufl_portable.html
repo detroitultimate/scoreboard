@@ -837,6 +837,8 @@
                         style="background: rgba(255,255,255,0.1); padding: 0.5rem 1rem;">🔊</button>
                     <button id="settings-btn" class="btn"
                         style="background: rgba(255,255,255,0.1); padding: 0.5rem 1rem;">⚙️</button>
+                    <button id="full-reset-btn" class="btn"
+                        style="background: rgba(255,255,255,0.1); padding: 0.5rem 1rem;">🧹</button>
                     <button id="undo-btn" class="btn"
                         style="background: rgba(255,255,255,0.1); padding: 0.5rem 1rem;">↩️</button>
                 </div>
@@ -967,6 +969,7 @@
                 score: { us: 0, them: 0 },
                 timeouts: { us: 2, them: 2 },
                 totalClock: 90 * 60,
+                initialClock: 90 * 60,
                 pointClock: 0,
                 isPaused: true,
                 period: 1,
@@ -1181,8 +1184,15 @@
             state.settings.ratioSequence = document.getElementById('ratio-sequence').value.toUpperCase().replace(/[^AB]/g, '') || 'AB';
             state.settings.timerSound = document.getElementById('timer-sound').value;
             state.settings.soundVolume = parseFloat(document.getElementById('timer-volume').value);
-            state.game.totalClock = state.settings.gameDuration * 60;
-            state.lineup.genderRatio = getRatioForPoint(state.lineup.currentPoint);
+            state.game.initialClock = state.settings.gameDuration * 60;
+			
+			if (state.game.hasStarted === false){
+				state.game.pointClock = 0;
+	            state.game.isPaused = true;
+	            state.game.period = 1;
+				state.game.totalClock = state.settings.gameDuration * 60;
+	            state.lineup.genderRatio = getRatioForPoint(state.lineup.currentPoint);
+			}
             document.getElementById('settings-modal').classList.remove('active');
             saveState();
             render();
@@ -1230,8 +1240,20 @@
 
             // Play Sound
             if (state.settings.soundEnabled) {
-                playEndGameSound();
+                const type = state.settings.timerSound;
+            	const vol = state.settings.soundVolume;
+            	playEndGameSound(type, vol);
             }
+
+
+			if (state.game.period < state.settings.periods) {
+            	state.game.isPaused = true;
+            	state.game.hasStarted = false;
+            	state.game.period = state.game.period + 1;
+				state.game.totalClock = state.game.initialClock;
+				render();			
+			}
+			
         }
 
         function playEndGameSound(soundType = null, volume = null) {
@@ -1337,24 +1359,26 @@
         }
 
 
-        let resetConfirmPending = false;
+        let fullresetConfirmPending = false;
+        let resetGameConfirmPending = false;		
         let resetConfirmTimeout = null;
+        let pendingResetAction = null;
 
-        function resetGame() {
-            if (!resetConfirmPending) {
+        function fullReset() {
+            if (!fullresetConfirmPending) {
                 // First click - enter confirmation state
-                resetConfirmPending = true;
+                fullresetConfirmPending = true;
                 render(); // Re-render to show confirmation button
 
                 // Auto-cancel confirmation after 3 seconds
                 resetConfirmTimeout = setTimeout(() => {
-                    resetConfirmPending = false;
+                    fullresetConfirmPending = false;
                     render();
                 }, 3000);
             } else {
                 // Second click - perform the reset
                 clearTimeout(resetConfirmTimeout);
-                resetConfirmPending = false;
+                fullresetConfirmPending = false;
 
                 const currentTheme = state.settings.theme; // Preserve theme
                 localStorage.removeItem('dufl_game_state');
@@ -1367,6 +1391,48 @@
                 render();
             }
         }
+		
+		
+        function resetGame() {
+            if (!resetGameConfirmPending) {
+                // First click - enter confirmation state
+                resetGameConfirmPending = true;
+                render(); // Re-render to show confirmation button
+
+                // Auto-cancel confirmation after 3 seconds
+                resetConfirmTimeout = setTimeout(() => {
+                    resetGameConfirmPending = false;
+                    render();
+                }, 3000);
+            } else {
+                // Second click - perform the reset
+                clearTimeout(resetConfirmTimeout);
+                resetGameConfirmPending = false;
+
+                const currentTheme = state.settings.theme; // Preserve theme
+//                localStorage.removeItem('dufl_game_state');
+//                state = JSON.parse(JSON.stringify(INITIAL_STATE));
+                state.settings.theme = currentTheme; // Restore theme
+
+				initialClock = state.game.initialClock
+				state.game.totalClock = initialClock;
+	            state.game.initialClock = initialClock;
+	            state.game.score.us = 0;
+	            state.game.score.them = 0;
+	            state.game.pointClock = 0;
+	            state.game.isPaused = true;
+	            state.game.hasStarted = false; // Explicitly ensure it's reset
+	            state.game.period = 1;
+	            lastTick = 0;
+	            state.lineup.currentPoint = 1;
+	            state.lineup.ratioIndexOverride = null;
+	            state.lineup.genderRatio = getRatioForPoint(state.lineup.currentPoint);
+                state.lineup.ratioIndexOverride = null;
+                history = [];
+                saveState();
+                render();
+            }
+        }		
 
         function saveState() {
             localStorage.setItem('dufl_game_state', JSON.stringify(state));
@@ -1420,6 +1486,11 @@
                 soundBtn.classList.toggle('muted', !state.settings.soundEnabled);
             }
 
+            const fullResetBtn = document.getElementById('full-reset-btn');
+            if (fullResetBtn) {
+                fullResetBtn.textContent = fullresetConfirmPending ? '⚠️' : '🧹';
+            }
+
             const scoreboardEl = document.getElementById('scoreboard-section');
             if (scoreboardEl) {
                 let pauseBtnLabel = 'PAUSE';
@@ -1468,7 +1539,7 @@
                 <div class="point-timer-container" style="margin: 0; font-size: 0.8rem; opacity: 0.6;"><span class="point-timer-val">00:00</span></div>
                 <div class="main-controls">
                     <button id="pause-btn" class="btn ${state.game.isPaused ? 'btn-pause-state' : 'btn-primary'}">${pauseBtnLabel}</button>
-                    <button id="reset-btn" class="btn ${resetConfirmPending ? 'btn-accent' : 'btn-ghost'}">${resetConfirmPending ? 'CONFIRM RESET?' : 'RESET GAME'}</button>
+                    <button id="reset-btn" class="btn ${resetGameConfirmPending ? 'btn-accent' : 'btn-ghost'}">${resetGameConfirmPending ? 'CONFIRM RESET?' : 'RESET GAME'}</button>
                 </div>
             </div>
         `;
@@ -1482,14 +1553,21 @@
                 const target = e.target;
 
                 // Cancel reset confirmation if clicking anywhere else
-                if (resetConfirmPending && target.id !== 'reset-btn') {
+                if (fullresetConfirmPending && target.id !== 'full-reset-btn') {
                     clearTimeout(resetConfirmTimeout);
-                    resetConfirmPending = false;
+                    fullresetConfirmPending = false;
                     render();
                 }
+				
+				if (resetGameConfirmPending && target.id !== 'reset-btn') {
+                    clearTimeout(resetConfirmTimeout);
+                    resetGameConfirmPending = false;
+                    render();
+                }				
 
                 if (target.id === 'pause-btn') togglePause();
                 if (target.id === 'reset-btn') resetGame();
+                if (target.id === 'full-reset-btn') fullReset();
                 if (target.id === 'undo-btn') undo();
                 if (target.id === 'settings-btn') openSettings();
                 if (target.id === 'theme-toggle-btn') toggleTheme();
