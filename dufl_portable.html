@@ -1593,7 +1593,7 @@
                 const input = document.getElementById(id);
                 if (input) {
                     input.addEventListener('input', (e) => {
-                        const team = id.includes('us') ? 'us' : 'them';
+                        const team = id.includes('team-us') ? 'us' : 'them';
                         state.settings[team === 'us' ? 'teamUsColor' : 'teamThemColor'] = e.target.value;
                         renderColorPickers();
                     });
