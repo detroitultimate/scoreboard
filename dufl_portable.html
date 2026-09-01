@@ -57,7 +57,7 @@
             color: var(--text-main);
             font-family: var(--font-main);
             overflow: hidden;
-            height: 100vh;
+            height: 100dvh;
             width: 100vw;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
@@ -177,11 +177,11 @@
             z-index: 10;
         }
 
-        .manual-score-controls.us {
+        .manual-score-controls.a {
             left: 0;
         }
 
-        .manual-score-controls.them {
+        .manual-score-controls.b {
             right: 0;
         }
 
@@ -426,6 +426,26 @@
             gap: 4rem;
         }
 
+        /* Team Customization uses the full width of the settings grid */
+        .team-customization-section {
+            grid-column: 1 / -1;
+        }
+
+        .team-customization-section .settings-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            align-items: start;
+        }
+
+        .team-customization-section .color-picker-container {
+            align-items: stretch;
+        }
+
+        .team-customization-section .color-presets {
+            justify-content: flex-start;
+        }
+
         .modal-content h2,
         .modal-content h3 {
             color: var(--text-main);
@@ -454,6 +474,7 @@
             padding: 1rem;
             color: var(--input-text);
             border-radius: 1rem;
+            font-size: 0.9rem;   /* or 1.1rem / 1.2rem to match the UI better */
         }
 
         /* Ensure the select dropdown list follows the active theme */
@@ -514,19 +535,22 @@
         }
 
         .team-manager-btn {
-            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 1rem;
+            padding: 1.2rem 2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s, transform 0.1s, opacity 0.2s;
             background: var(--input-bg);
             border: 1px solid var(--glass-border);
             color: var(--text-main);
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.2s ease;
+            font-size: 0.9rem;
         }
 
         .team-manager-btn:hover {
             background: var(--primary);
             border-color: var(--primary);
+            color: white;
         }
 
         .team-manager-modal {
@@ -560,6 +584,12 @@
         .team-list {
             display: flex;
             flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .team-manager-actions {
+            display: flex;
             gap: 0.75rem;
             margin-bottom: 1.5rem;
         }
@@ -657,6 +687,7 @@
             font-weight: 700;
             cursor: pointer;
             transition: background-color 0.2s, color 0.2s, transform 0.1s, opacity 0.2s;
+            font-size: 0.9rem;
         }
 
         .btn-primary {
@@ -834,8 +865,8 @@
                 margin-bottom: 0.5vh;
             }
 
-            .manual-score-controls.us,
-            .manual-score-controls.them {
+            .manual-score-controls.a,
+            .manual-score-controls.b {
                 left: auto !important;
                 right: auto !important;
                 bottom: auto !important;
@@ -999,52 +1030,52 @@
             <div class="modal-content">
                 <h2>Game Settings</h2>
                 <div class="settings-grid">
-                    <div class="settings-section">
+                    <div class="settings-section team-customization-section">
                         <h3>Team Customization</h3>
                         <div class="form-group">
-                            <label>Team 1 - Quick Select</label>
-                            <select id="team-us-preset" class="team-preset-select">
+                            <button type="button" id="manage-teams-btn" class="team-manager-btn btn-accent">Manage Team List</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Team A - Quick Select</label>
+                            <select id="team-a-preset" class="team-preset-select">
                                 <option value="">Custom Team</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Team 1 Name & Color</label>
+                            <label>Team A Name & Color</label>
                             <div class="settings-row">
-                                <input type="text" id="team-us-name" value="Team 1">
+                                <input type="text" id="team-a-name" value="Team A">
                                 <div class="color-picker-container">
                                     <label>Presets</label>
-                                    <div class="color-presets" id="team-us-color-picker"></div>
+                                    <div class="color-presets" id="team-a-color-picker"></div>
                                     <label>Custom</label>
-                                    <input type="color" id="team-us-custom-color" class="custom-color-input">
+                                    <input type="color" id="team-a-custom-color" class="custom-color-input">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <button type="button" id="team-us-save-btn" class="team-manager-btn" style="width: 100%;">Save Team 1 to List</button>
+                            <button type="button" id="team-a-save-btn" class="team-manager-btn btn-primary">Save Team A</button>
                         </div>
                         <div class="form-group">
-                            <label>Team 2 - Quick Select</label>
-                            <select id="team-them-preset" class="team-preset-select">
+                            <label>Team B - Quick Select</label>
+                            <select id="team-b-preset" class="team-preset-select">
                                 <option value="">Custom Team</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Team 2 Name & Color</label>
+                            <label>Team B Name & Color</label>
                             <div class="settings-row">
-                                <input type="text" id="team-them-name" value="Team 2">
+                                <input type="text" id="team-b-name" value="Team B">
                                 <div class="color-picker-container">
                                     <label>Presets</label>
-                                    <div class="color-presets" id="team-them-color-picker"></div>
+                                    <div class="color-presets" id="team-b-color-picker"></div>
                                     <label>Custom</label>
-                                    <input type="color" id="team-them-custom-color" class="custom-color-input">
+                                    <input type="color" id="team-b-custom-color" class="custom-color-input">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <button type="button" id="team-them-save-btn" class="team-manager-btn" style="width: 100%;">Save Team 2 to List</button>
-                        </div>
-                        <div class="form-group">
-                            <button type="button" id="manage-teams-btn" class="team-manager-btn" style="width: 100%; background: var(--accent);">Manage Team List</button>
+                            <button type="button" id="team-b-save-btn" class="team-manager-btn btn-primary">Save Team B</button>
                         </div>
                     </div>
                 </div>
@@ -1121,8 +1152,8 @@
                 <h2>Manage Team List</h2>
                 <div id="team-list-container" class="team-list"></div>
                 <div class="team-manager-actions">
-                    <button id="export-teams-btn" class="team-manager-btn" style="width: 48%; margin-right: 4%;">Export Teams</button>
-                    <button id="import-teams-btn" class="team-manager-btn" style="width: 48%;">Import Teams</button>
+                    <button id="export-teams-btn" class="team-manager-btn btn-primary" style="flex: 1;">Export Teams</button>
+                    <button id="import-teams-btn" class="team-manager-btn btn-accent" style="flex: 1;">Import Teams</button>
                     <input type="file" id="teams-file-input" accept=".json" style="display: none;">
                 </div>
                 <button id="team-manager-close-btn" class="team-manager-close-btn">Close</button>
@@ -1144,10 +1175,10 @@
 
         const INITIAL_STATE = {
             game: {
-                score: { us: 0, them: 0 },
+                score: { a: 0, b: 0 },
                 timeouts: { us: 2, them: 2 },
-                totalClock: 90 * 60,
-                initialClock: 90 * 60,
+                totalClock: 45 * 60,
+                initialClock: 45 * 60,
                 pointClock: 0,
                 isPaused: true,
                 period: 1,
@@ -1155,12 +1186,12 @@
             },
             ui: {},
             settings: {
-                teamUsName: "Team 1",
-                teamThemName: "Team 2",
-                teamUsColor: "#4f46e5",
-                teamThemColor: "#ef4444",
-                gameDuration: 90,
-                periods: 1,
+                teamAName: "Team A",
+                teamBName: "Team B",
+                teamAColor: "#4f46e5",
+                teamBColor: "#ef4444",
+                gameDuration: 45,
+                periods: 2,
                 ratioRule: 'ABBA',
                 ratioADef: '4M/3F',
                 ratioBDef: '3M/4F',
@@ -1316,8 +1347,8 @@
             const modal = document.getElementById('settings-modal');
             modal.classList.add('active');
 
-            document.getElementById('team-us-name').value = state.settings.teamUsName;
-            document.getElementById('team-them-name').value = state.settings.teamThemName;
+            document.getElementById('team-a-name').value = state.settings.teamAName;
+            document.getElementById('team-b-name').value = state.settings.teamBName;
             document.getElementById('game-duration').value = state.settings.gameDuration;
             document.getElementById('game-periods').value = state.settings.periods;
             document.getElementById('ratio-rule').value = state.settings.ratioRule || 'ABBA';
@@ -1328,8 +1359,8 @@
             const seqGroup = document.getElementById('ratio-sequence-group');
             if (seqGroup) seqGroup.style.display = (state.settings.ratioRule === 'MANUAL') ? 'block' : 'none';
 
-            document.getElementById('team-us-custom-color').value = state.settings.teamUsColor;
-            document.getElementById('team-them-custom-color').value = state.settings.teamThemColor;
+            document.getElementById('team-a-custom-color').value = state.settings.teamAColor;
+            document.getElementById('team-b-custom-color').value = state.settings.teamBColor;
             document.getElementById('timer-sound').value = state.settings.timerSound || 'classic';
             document.getElementById('timer-volume').value = state.settings.soundVolume || 0.5;
 
@@ -1338,24 +1369,24 @@
         }
 
         function renderColorPickers() {
-            const usPicker = document.getElementById('team-us-color-picker');
-            const themPicker = document.getElementById('team-them-color-picker');
-            if (!usPicker || !themPicker) return;
+            const aPicker = document.getElementById('team-a-color-picker');
+            const bPicker = document.getElementById('team-b-color-picker');
+            if (!aPicker || !bPicker) return;
 
-            [usPicker, themPicker].forEach((picker, idx) => {
+            [aPicker, bPicker].forEach((picker, idx) => {
                 picker.innerHTML = PRESET_COLORS.map(c => `
-            <div class="color-option ${c.toLowerCase() === (idx === 0 ? state.settings.teamUsColor.toLowerCase() : state.settings.teamThemColor.toLowerCase()) ? 'active' : ''}" 
+            <div class="color-option ${c.toLowerCase() === (idx === 0 ? state.settings.teamAColor.toLowerCase() : state.settings.teamBColor.toLowerCase()) ? 'active' : ''}" 
                  style="background: ${c}" 
                  data-color="${c}" 
-                 data-team="${idx === 0 ? 'us' : 'them'}"></div>
+                 data-team="${idx === 0 ? 'a' : 'b'}"></div>
         `).join('');
             });
         }
 
         function saveSettings() {
             pushHistory();
-            state.settings.teamUsName = document.getElementById('team-us-name').value;
-            state.settings.teamThemName = document.getElementById('team-them-name').value;
+            state.settings.teamAName = document.getElementById('team-a-name').value;
+            state.settings.teamBName = document.getElementById('team-b-name').value;
             state.settings.gameDuration = parseInt(document.getElementById('game-duration').value);
             state.settings.periods = parseInt(document.getElementById('game-periods').value);
             state.settings.ratioRule = document.getElementById('ratio-rule').value;
@@ -1366,9 +1397,10 @@
             state.settings.soundVolume = parseFloat(document.getElementById('timer-volume').value);
             state.game.initialClock = state.settings.gameDuration * 60;
 			
-			if (state.game.hasStarted === false){
+			if (state.game.isPaused === true){
 				state.game.pointClock = 0;
 	            state.game.isPaused = true;
+                state.game.hasStarted = false;
 	            state.game.period = 1;
 				state.game.totalClock = state.settings.gameDuration * 60;
 	            state.lineup.genderRatio = getRatioForPoint(state.lineup.currentPoint);
@@ -1379,26 +1411,26 @@
         }
 
         function renderTeamPresets() {
-            const usSelect = document.getElementById('team-us-preset');
-            const themSelect = document.getElementById('team-them-preset');
+            const aSelect = document.getElementById('team-a-preset');
+            const bSelect = document.getElementById('team-b-preset');
             
-            if (!usSelect || !themSelect) return;
+            if (!aSelect || !bSelect) return;
             
             // Clear existing options except the first one
-            usSelect.innerHTML = '<option value="">Custom Team</option>';
-            themSelect.innerHTML = '<option value="">Custom Team</option>';
+            aSelect.innerHTML = '<option value="">Custom Team</option>';
+            bSelect.innerHTML = '<option value="">Custom Team</option>';
             
             // Add team options
             state.teams.forEach(team => {
-                const optionUs = document.createElement('option');
-                optionUs.value = team.id;
-                optionUs.textContent = team.name;
-                usSelect.appendChild(optionUs);
+                const optionA = document.createElement('option');
+                optionA.value = team.id;
+                optionA.textContent = team.name;
+                aSelect.appendChild(optionA);
                 
-                const optionThem = document.createElement('option');
-                optionThem.value = team.id;
-                optionThem.textContent = team.name;
-                themSelect.appendChild(optionThem);
+                const optionB = document.createElement('option');
+                optionB.value = team.id;
+                optionB.textContent = team.name;
+                bSelect.appendChild(optionB);
             });
         }
 
@@ -1432,8 +1464,8 @@
             if (nameInput) nameInput.value = team.name;
             if (colorInput) colorInput.value = team.color;
             
-            state.settings[teamNumber === 'us' ? 'teamUsName' : 'teamThemName'] = team.name;
-            state.settings[teamNumber === 'us' ? 'teamUsColor' : 'teamThemColor'] = team.color;
+            state.settings[teamNumber === 'a' ? 'teamAName' : 'teamBName'] = team.name;
+            state.settings[teamNumber === 'a' ? 'teamAColor' : 'teamBColor'] = team.color;
             
             renderColorPickers();
         }
@@ -1709,8 +1741,8 @@
 				initialClock = state.game.initialClock
 				state.game.totalClock = initialClock;
 	            state.game.initialClock = initialClock;
-	            state.game.score.us = 0;
-	            state.game.score.them = 0;
+	            state.game.score.a = 0;
+	            state.game.score.b = 0;
 	            state.game.pointClock = 0;
 	            state.game.isPaused = true;
 	            state.game.hasStarted = false; // Explicitly ensure it's reset
@@ -1755,8 +1787,15 @@
             if (saved) {
                 state = Object.assign(JSON.parse(JSON.stringify(INITIAL_STATE)), JSON.parse(saved));
                 // Migration: Update old default names if they exist
-                if (state.settings.teamUsName === "US") state.settings.teamUsName = "Team 1";
-                if (state.settings.teamThemName === "THEM") state.settings.teamThemName = "Team 2";
+                if (state.settings.teamUsName === "US") state.settings.teamUsName = "Team A";
+                if (state.settings.teamThemName === "THEM") state.settings.teamThemName = "Team B";
+                // Migration: Map old us/them settings to new a/b settings
+                if (state.settings.teamAName === undefined && state.settings.teamUsName !== undefined) {
+                    state.settings.teamAName = state.settings.teamUsName;
+                    state.settings.teamBName = state.settings.teamThemName;
+                    state.settings.teamAColor = state.settings.teamUsColor;
+                    state.settings.teamBColor = state.settings.teamThemColor;
+                }
             }
             // Always load teams from their own persistent key
             loadTeams();
@@ -1791,8 +1830,8 @@
         }
 
         function render() {
-            document.documentElement.style.setProperty('--team-us-color', state.settings.teamUsColor);
-            document.documentElement.style.setProperty('--team-them-color', state.settings.teamThemColor);
+            document.documentElement.style.setProperty('--team-a-color', state.settings.teamAColor);
+            document.documentElement.style.setProperty('--team-b-color', state.settings.teamBColor);
 
             // Apply Theme
             document.body.classList.toggle('light-mode', state.settings.theme === 'light');
@@ -1834,24 +1873,24 @@
                 <span class="ratio-val">${state.lineup.genderRatio}</span>
             </div>
             <div class="score-container">
-                <div class="team-score us">
-                    <span class="team-label" style="color: var(--team-us-color)">${state.settings.teamUsName}</span>
+                <div class="team-score a">
+                    <span class="team-label" style="color: var(--team-a-color)">${state.settings.teamAName}</span>
                     <div class="score-display-wrapper">
-                        <div class="score-display fast-score active-border" data-team="us" style="background: ${state.settings.teamUsColor}15; border-color: ${state.settings.teamUsColor}">${state.game.score.us}</div>
-                        <div class="manual-score-controls us">
-                            <button class="manual-adj-btn" data-team="us" data-action="up">+</button>
-                            <button class="manual-adj-btn" data-team="us" data-action="down">-</button>
+                        <div class="score-display fast-score active-border" data-team="a" style="background: ${state.settings.teamAColor}15; border-color: ${state.settings.teamAColor}">${state.game.score.a}</div>
+                        <div class="manual-score-controls a">
+                            <button class="manual-adj-btn" data-team="a" data-action="up">+</button>
+                            <button class="manual-adj-btn" data-team="a" data-action="down">-</button>
                         </div>
                     </div>
                 </div>
                 <div class="score-divider"><span>:</span></div>
-                <div class="team-score them">
-                    <span class="team-label" style="color: var(--team-them-color)">${state.settings.teamThemName}</span>
+                <div class="team-score b">
+                    <span class="team-label" style="color: var(--team-b-color)">${state.settings.teamBName}</span>
                     <div class="score-display-wrapper">
-                        <div class="score-display fast-score active-border" data-team="them" style="background: ${state.settings.teamThemColor}15; border-color: ${state.settings.teamThemColor}">${state.game.score.them}</div>
-                        <div class="manual-score-controls them">
-                            <button class="manual-adj-btn" data-team="them" data-action="up">+</button>
-                            <button class="manual-adj-btn" data-team="them" data-action="down">-</button>
+                        <div class="score-display fast-score active-border" data-team="b" style="background: ${state.settings.teamBColor}15; border-color: ${state.settings.teamBColor}">${state.game.score.b}</div>
+                        <div class="manual-score-controls b">
+                            <button class="manual-adj-btn" data-team="b" data-action="up">+</button>
+                            <button class="manual-adj-btn" data-team="b" data-action="down">-</button>
                         </div>
                     </div>
                 </div>
@@ -1901,7 +1940,7 @@
                 if (target.classList.contains('color-option')) {
                     const team = target.dataset.team;
                     const color = target.dataset.color;
-                    state.settings[team === 'us' ? 'teamUsColor' : 'teamThemColor'] = color;
+                    state.settings[team === 'a' ? 'teamAColor' : 'teamBColor'] = color;
                     document.getElementById(`team-${team}-custom-color`).value = color;
                     renderColorPickers();
                 }
@@ -1911,12 +1950,12 @@
                 }
             });
 
-            ['team-us-custom-color', 'team-them-custom-color'].forEach(id => {
+            ['team-a-custom-color', 'team-b-custom-color'].forEach(id => {
                 const input = document.getElementById(id);
                 if (input) {
                     input.addEventListener('input', (e) => {
-                        const team = id.includes('team-us') ? 'us' : 'them';
-                        state.settings[team === 'us' ? 'teamUsColor' : 'teamThemColor'] = e.target.value;
+                        const team = id.includes('team-a') ? 'a' : 'b';
+                        state.settings[team === 'a' ? 'teamAColor' : 'teamBColor'] = e.target.value;
                         renderColorPickers();
                     });
                 }
@@ -1960,20 +1999,20 @@
                 }
             });
 
-            document.getElementById('team-us-preset').addEventListener('change', (e) => {
-                if (e.target.value) loadTeamToForm(e.target.value, 'us');
+            document.getElementById('team-a-preset').addEventListener('change', (e) => {
+                if (e.target.value) loadTeamToForm(e.target.value, 'a');
             });
 
-            document.getElementById('team-them-preset').addEventListener('change', (e) => {
-                if (e.target.value) loadTeamToForm(e.target.value, 'them');
+            document.getElementById('team-b-preset').addEventListener('change', (e) => {
+                if (e.target.value) loadTeamToForm(e.target.value, 'b');
             });
 
-            document.getElementById('team-us-save-btn').addEventListener('click', () => {
-                saveTeamToList('us');
+            document.getElementById('team-a-save-btn').addEventListener('click', () => {
+                saveTeamToList('a');
             });
 
-            document.getElementById('team-them-save-btn').addEventListener('click', () => {
-                saveTeamToList('them');
+            document.getElementById('team-b-save-btn').addEventListener('click', () => {
+                saveTeamToList('b');
             });
 
             // Event delegation for delete buttons in team manager
