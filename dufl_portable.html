@@ -1176,7 +1176,7 @@
         const INITIAL_STATE = {
             game: {
                 score: { a: 0, b: 0 },
-                timeouts: { us: 2, them: 2 },
+                timeouts: { teamA: 2, teamB: 2 },
                 totalClock: 45 * 60,
                 initialClock: 45 * 60,
                 pointClock: 0,
@@ -1782,21 +1782,52 @@
             }
         }
 
+        function deepMerge(target, source) {
+            // Recursively merge source into target, preserving target properties not in source
+            for (const key in source) {
+                if (source.hasOwnProperty(key)) {
+                    if (typeof source[key] === 'object' && source[key] !== null && !Array.isArray(source[key])) {
+                        // For objects, recurse instead of replacing
+                        if (!target[key] || typeof target[key] !== 'object' || Array.isArray(target[key])) {
+                            target[key] = {};
+                        }
+                        deepMerge(target[key], source[key]);
+                    } else {
+                        // For primitives and arrays, replace
+                        target[key] = source[key];
+                    }
+                }
+            }
+            return target;
+        }
+
         function loadState() {
             const saved = localStorage.getItem('dufl_game_state');
             if (saved) {
-                state = Object.assign(JSON.parse(JSON.stringify(INITIAL_STATE)), JSON.parse(saved));
-                // Migration: Update old default names if they exist
-                if (state.settings.teamUsName === "US") state.settings.teamUsName = "Team A";
-                if (state.settings.teamThemName === "THEM") state.settings.teamThemName = "Team B";
-                // Migration: Map old us/them settings to new a/b settings
-                if (state.settings.teamAName === undefined && state.settings.teamUsName !== undefined) {
-                    state.settings.teamAName = state.settings.teamUsName;
-                    state.settings.teamBName = state.settings.teamThemName;
-                    state.settings.teamAColor = state.settings.teamUsColor;
-                    state.settings.teamBColor = state.settings.teamThemColor;
-                }
+                const parsedSaved = JSON.parse(saved);
+                // Deep merge: start with INITIAL_STATE and merge in saved values
+                state = JSON.parse(JSON.stringify(INITIAL_STATE));
+                deepMerge(state, parsedSaved);
+                // Note: teams are handled separately below
+            } else {
+                // No saved state - reset to initial state
+                state = JSON.parse(JSON.stringify(INITIAL_STATE));
             }
+            // Defensive: Ensure critical settings always have valid values (handle corrupted/incomplete data)
+            // Check for both undefined value AND the string "undefined", and empty/whitespace strings
+            const isValidTeamName = (name) => typeof name === 'string' && name.trim() && name !== "undefined";
+            if (!isValidTeamName(state.settings.teamAName)) state.settings.teamAName = "Team A";
+            if (!isValidTeamName(state.settings.teamBName)) state.settings.teamBName = "Team B";
+            if (!state.settings.teamAColor) state.settings.teamAColor = "#4f46e5";
+            if (!state.settings.teamBColor) state.settings.teamBColor = "#ef4444";
+            
+            // Ensure score values are valid numbers
+            if (typeof state.game.score.a !== 'number') state.game.score.a = 0;
+            if (typeof state.game.score.b !== 'number') state.game.score.b = 0;
+            
+            // Ensure genderRatio is always set
+            if (!state.lineup.genderRatio) state.lineup.genderRatio = '4M/3F';
+            
             // Always load teams from their own persistent key
             loadTeams();
             // For backward compatibility: if teams exist in old saved state but not in new storage, migrate them
