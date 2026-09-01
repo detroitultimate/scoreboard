@@ -456,6 +456,33 @@
             border-radius: 1rem;
         }
 
+        /* Ensure the select dropdown list follows the active theme */
+        .form-group select {
+            color-scheme: light dark;
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: linear-gradient(45deg, transparent 50%, var(--text-dim) 50%),
+                linear-gradient(135deg, var(--text-dim) 50%, transparent 50%);
+            background-position: calc(100% - 20px) calc(1em + 2px),
+                calc(100% - 15px) calc(1em + 2px);
+            background-size: 5px 5px, 5px 5px;
+            background-repeat: no-repeat;
+            padding-right: 2.5rem;
+        }
+
+        .form-group select option {
+            background: var(--modal-bg);
+            color: var(--text-main);
+        }
+
+        body.light-mode .form-group select {
+            color-scheme: light;
+        }
+
+        body.dark-mode .form-group select {
+            color-scheme: dark;
+        }
+
         .settings-row {
             display: flex;
             gap: 1rem;
@@ -484,6 +511,123 @@
             border: 1px solid var(--glass-border);
             border-radius: 0.75rem;
             cursor: pointer;
+        }
+
+        .team-manager-btn {
+            padding: 0.5rem 1rem;
+            background: var(--input-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .team-manager-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .team-manager-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--modal-overlay-bg);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .team-manager-modal.active {
+            display: flex;
+        }
+
+        .team-manager-content {
+            background: var(--modal-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+        }
+
+        .team-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .team-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .team-item-color {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .team-item-info {
+            flex: 1;
+        }
+
+        .team-item-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .team-item-color-hex {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+
+        .team-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .team-delete-btn {
+            padding: 0.4rem 0.8rem;
+            background: var(--error);
+            color: white;
+            border: none;
+            border-radius: 0.4rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .team-delete-btn:hover {
+            opacity: 0.8;
+        }
+
+        .team-delete-btn.confirming {
+            background: var(--accent);
+        }
+
+        .team-manager-close-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--text-dim);
+            color: var(--bg-color);
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
         }
 
         .color-option {
@@ -858,6 +1002,12 @@
                     <div class="settings-section">
                         <h3>Team Customization</h3>
                         <div class="form-group">
+                            <label>Team 1 - Quick Select</label>
+                            <select id="team-us-preset" class="team-preset-select">
+                                <option value="">Custom Team</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label>Team 1 Name & Color</label>
                             <div class="settings-row">
                                 <input type="text" id="team-us-name" value="Team 1">
@@ -870,6 +1020,15 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <button type="button" id="team-us-save-btn" class="team-manager-btn" style="width: 100%;">Save Team 1 to List</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Team 2 - Quick Select</label>
+                            <select id="team-them-preset" class="team-preset-select">
+                                <option value="">Custom Team</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label>Team 2 Name & Color</label>
                             <div class="settings-row">
                                 <input type="text" id="team-them-name" value="Team 2">
@@ -880,6 +1039,12 @@
                                     <input type="color" id="team-them-custom-color" class="custom-color-input">
                                 </div>
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" id="team-them-save-btn" class="team-manager-btn" style="width: 100%;">Save Team 2 to List</button>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" id="manage-teams-btn" class="team-manager-btn" style="width: 100%; background: var(--accent);">Manage Team List</button>
                         </div>
                     </div>
                 </div>
@@ -951,6 +1116,19 @@
             </div>
         </div>
 
+        <div id="team-manager-modal" class="team-manager-modal">
+            <div class="team-manager-content">
+                <h2>Manage Team List</h2>
+                <div id="team-list-container" class="team-list"></div>
+                <div class="team-manager-actions">
+                    <button id="export-teams-btn" class="team-manager-btn" style="width: 48%; margin-right: 4%;">Export Teams</button>
+                    <button id="import-teams-btn" class="team-manager-btn" style="width: 48%;">Import Teams</button>
+                    <input type="file" id="teams-file-input" accept=".json" style="display: none;">
+                </div>
+                <button id="team-manager-close-btn" class="team-manager-close-btn">Close</button>
+            </div>
+        </div>
+
         <nav id="mobile-nav" class="mobile-nav">
             <!-- Navigation for portrait mode -->
         </nav>
@@ -996,7 +1174,8 @@
                 currentPoint: 1,
                 genderRatio: '4M/3F',
                 ratioIndexOverride: null
-            }
+            },
+            teams: []
         };
 
         let state = JSON.parse(JSON.stringify(INITIAL_STATE));
@@ -1155,6 +1334,7 @@
             document.getElementById('timer-volume').value = state.settings.soundVolume || 0.5;
 
             renderColorPickers();
+            renderTeamPresets();
         }
 
         function renderColorPickers() {
@@ -1196,6 +1376,116 @@
             document.getElementById('settings-modal').classList.remove('active');
             saveState();
             render();
+        }
+
+        function renderTeamPresets() {
+            const usSelect = document.getElementById('team-us-preset');
+            const themSelect = document.getElementById('team-them-preset');
+            
+            if (!usSelect || !themSelect) return;
+            
+            // Clear existing options except the first one
+            usSelect.innerHTML = '<option value="">Custom Team</option>';
+            themSelect.innerHTML = '<option value="">Custom Team</option>';
+            
+            // Add team options
+            state.teams.forEach(team => {
+                const optionUs = document.createElement('option');
+                optionUs.value = team.id;
+                optionUs.textContent = team.name;
+                usSelect.appendChild(optionUs);
+                
+                const optionThem = document.createElement('option');
+                optionThem.value = team.id;
+                optionThem.textContent = team.name;
+                themSelect.appendChild(optionThem);
+            });
+        }
+
+        function addTeam(name, color) {
+            // Prevent duplicate team names (case-insensitive)
+            const trimmedName = name.trim();
+            if (state.teams.some(t => t.name.trim().toLowerCase() === trimmedName.toLowerCase())) {
+                return; // team already exists, don't add again
+            }
+            const newId = state.teams.length > 0 ? Math.max(...state.teams.map(t => t.id)) + 1 : 1;
+            state.teams.push({ id: newId, name: trimmedName, color });
+            saveState();
+            renderTeamPresets();
+            renderTeamManager();
+        }
+
+        function removeTeam(teamId) {
+            state.teams = state.teams.filter(t => t.id !== teamId);
+            saveState();
+            renderTeamPresets();
+            renderTeamManager();
+        }
+
+        function loadTeamToForm(teamId, teamNumber) {
+            const team = state.teams.find(t => t.id === parseInt(teamId));
+            if (!team) return;
+            
+            const nameInput = document.getElementById(`team-${teamNumber}-name`);
+            const colorInput = document.getElementById(`team-${teamNumber}-custom-color`);
+            
+            if (nameInput) nameInput.value = team.name;
+            if (colorInput) colorInput.value = team.color;
+            
+            state.settings[teamNumber === 'us' ? 'teamUsName' : 'teamThemName'] = team.name;
+            state.settings[teamNumber === 'us' ? 'teamUsColor' : 'teamThemColor'] = team.color;
+            
+            renderColorPickers();
+        }
+
+        let pendingDeleteTeamId = null;
+        let pendingDeleteTimeout = null;
+
+        function renderTeamManager() {
+            const container = document.getElementById('team-list-container');
+            if (!container) return;
+            
+            if (pendingDeleteTeamId !== null && !state.teams.some(t => t.id === pendingDeleteTeamId)) {
+                pendingDeleteTeamId = null;
+            }
+            
+            container.innerHTML = state.teams.map(team => {
+                const isConfirming = pendingDeleteTeamId === team.id;
+                return `
+                <div class="team-item">
+                    <div class="team-item-color" style="background: ${team.color};"></div>
+                    <div class="team-item-info">
+                        <div class="team-item-name">${team.name}</div>
+                        <div class="team-item-color-hex">${team.color}</div>
+                    </div>
+                    <div class="team-item-actions">
+                        <button class="team-delete-btn ${isConfirming ? 'confirming' : ''}" data-team-id="${team.id}">${isConfirming ? 'CONFIRM DELETE?' : 'Delete'}</button>
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        function saveTeamToList(teamNumber) {
+            const nameInput = document.getElementById(`team-${teamNumber}-name`);
+            const colorInput = document.getElementById(`team-${teamNumber}-custom-color`);
+            
+            if (!nameInput || !colorInput) return;
+            
+            const name = nameInput.value.trim();
+            const color = colorInput.value;
+            
+            if (!name) return;
+            
+            addTeam(name, color);
+        }
+
+        function openTeamManager() {
+            const modal = document.getElementById('team-manager-modal');
+            if (modal) {
+                renderTeamManager();
+                modal.classList.add('active');
+            }
         }
 
         function toggleRatio() {
@@ -1381,9 +1671,11 @@
                 fullresetConfirmPending = false;
 
                 const currentTheme = state.settings.theme; // Preserve theme
-                localStorage.removeItem('dufl_game_state');
+                const currentTeams = state.teams; // Preserve team list
+                localStorage.removeItem('dufl_game_state'); // Only clears game config, not teams
                 state = JSON.parse(JSON.stringify(INITIAL_STATE));
                 state.settings.theme = currentTheme; // Restore theme
+                state.teams = currentTeams; // Restore team list
                 state.game.hasStarted = false; // Explicitly ensure it's reset
                 state.lineup.ratioIndexOverride = null;
                 history = [];
@@ -1435,7 +1727,27 @@
         }		
 
         function saveState() {
-            localStorage.setItem('dufl_game_state', JSON.stringify(state));
+            // Save teams separately so they persist even after a full config reset
+            saveTeams();
+            const stateToSave = JSON.parse(JSON.stringify(state));
+            stateToSave.teams = undefined; // teams stored in their own key
+            localStorage.setItem('dufl_game_state', JSON.stringify(stateToSave));
+        }
+
+        function saveTeams() {
+            localStorage.setItem('dufl_teams', JSON.stringify(state.teams || []));
+        }
+
+        function loadTeams() {
+            const savedTeams = localStorage.getItem('dufl_teams');
+            if (savedTeams) {
+                try {
+                    const parsed = JSON.parse(savedTeams);
+                    if (Array.isArray(parsed)) state.teams = parsed;
+                } catch (e) {
+                    state.teams = [];
+                }
+            }
         }
 
         function loadState() {
@@ -1445,6 +1757,16 @@
                 // Migration: Update old default names if they exist
                 if (state.settings.teamUsName === "US") state.settings.teamUsName = "Team 1";
                 if (state.settings.teamThemName === "THEM") state.settings.teamThemName = "Team 2";
+            }
+            // Always load teams from their own persistent key
+            loadTeams();
+            // For backward compatibility: if teams exist in old saved state but not in new storage, migrate them
+            if (saved && state.teams.length === 0) {
+                const oldState = JSON.parse(saved);
+                if (oldState.teams && Array.isArray(oldState.teams) && oldState.teams.length > 0) {
+                    state.teams = oldState.teams;
+                    saveTeams();
+                }
             }
         }
 
@@ -1624,6 +1946,134 @@
                     }
                 }
             });
+
+            // Team Management Event Listeners
+            document.getElementById('manage-teams-btn').addEventListener('click', openTeamManager);
+            
+            document.getElementById('team-manager-close-btn').addEventListener('click', () => {
+                document.getElementById('team-manager-modal').classList.remove('active');
+            });
+
+            document.getElementById('team-manager-modal').addEventListener('click', (e) => {
+                if (e.target.id === 'team-manager-modal') {
+                    e.target.classList.remove('active');
+                }
+            });
+
+            document.getElementById('team-us-preset').addEventListener('change', (e) => {
+                if (e.target.value) loadTeamToForm(e.target.value, 'us');
+            });
+
+            document.getElementById('team-them-preset').addEventListener('change', (e) => {
+                if (e.target.value) loadTeamToForm(e.target.value, 'them');
+            });
+
+            document.getElementById('team-us-save-btn').addEventListener('click', () => {
+                saveTeamToList('us');
+            });
+
+            document.getElementById('team-them-save-btn').addEventListener('click', () => {
+                saveTeamToList('them');
+            });
+
+            // Event delegation for delete buttons in team manager
+            document.getElementById('team-list-container').addEventListener('click', (e) => {
+                if (e.target.classList.contains('team-delete-btn')) {
+                    const teamId = parseInt(e.target.dataset.teamId);
+                    if (pendingDeleteTeamId === teamId) {
+                        // Second click - perform the delete
+                        clearTimeout(pendingDeleteTimeout);
+                        pendingDeleteTeamId = null;
+                        removeTeam(teamId);
+                    } else {
+                        // First click - enter confirmation state
+                        clearTimeout(pendingDeleteTimeout);
+                        pendingDeleteTeamId = teamId;
+                        renderTeamManager();
+                        pendingDeleteTimeout = setTimeout(() => {
+                            pendingDeleteTeamId = null;
+                            renderTeamManager();
+                        }, 3000);
+                    }
+                } else {
+                    // Clicking elsewhere cancels pending delete confirmation
+                    if (pendingDeleteTeamId !== null) {
+                        clearTimeout(pendingDeleteTimeout);
+                        pendingDeleteTeamId = null;
+                        renderTeamManager();
+                    }
+                }
+            });
+
+            // Export/Import Event Listeners
+            document.getElementById('export-teams-btn').addEventListener('click', exportTeams);
+            document.getElementById('import-teams-btn').addEventListener('click', () => {
+                document.getElementById('teams-file-input').click();
+            });
+            document.getElementById('teams-file-input').addEventListener('change', importTeams);
+        }
+
+        function exportTeams() {
+            const teamsData = {
+                teams: state.teams,
+                exportedAt: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            const dataStr = JSON.stringify(teamsData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            // Create a temporary anchor element to trigger the download
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `dufl_teams_${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            // Clean up
+            setTimeout(() => URL.revokeObjectURL(url), 100);
+        }
+
+        function importTeams(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (importedData.teams && Array.isArray(importedData.teams)) {
+                        // Validate team structure
+                        const validTeams = importedData.teams.filter(team => 
+                            team.id && typeof team.id === 'number' &&
+                            team.name && typeof team.name === 'string' &&
+                            team.color && typeof team.color === 'string'
+                        );
+                        
+                        if (validTeams.length > 0) {
+                            state.teams = validTeams;
+                            saveState();
+                            renderTeamPresets();
+                            renderTeamManager();
+                        } else {
+                            alert('No valid teams found in the file.');
+                        }
+                    } else {
+                        alert('Invalid file format. Please export teams from DUFL first.');
+                    }
+                } catch (err) {
+                    alert('Error reading file: ' + err.message);
+                }
+            };
+            reader.onerror = function() {
+                alert('Error reading file.');
+            };
+            reader.readAsText(file);
+            
+            // Reset file input
+            event.target.value = '';
         }
 
         function init() {

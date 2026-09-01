@@ -1,0 +1,13 @@
+{
+  "teams": [
+    { "id": 1, "name": "Crumbling Infrastructure", "color": "#ffffff" },
+    { "id": 2, "name": "Trash Can Robins", "color": "#56a0d3" },
+    { "id": 3, "name": "Red Rubbish Robins", "color": "#ef4444" },
+    { "id": 4, "name": "Bananimals", "color": "#ec4899" },
+    { "id": 5, "name": "Wolverine Green Slushie Machine", "color": "#10b981" },
+    { "id": 6, "name": "Painted Turdlez", "color": "#101010" },
+    { "id": 7, "name": "Apple Blossom Genes", "color": "#1e3a8a" }
+  ],
+  "exportedAt": "2026-08-31T00:00:00.000Z",
+  "version": "1.0"
+}
