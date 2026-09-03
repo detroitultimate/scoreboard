@@ -1,0 +1,36 @@
+{
+  "teams": [
+    {
+      "id": 1,
+      "name": "Team 01",
+      "color": "#800080"
+    },
+    {
+      "id": 2,
+      "name": "Team 02",
+      "color": "#008000"
+    },
+    {
+      "id": 3,
+      "name": "Team 03",
+      "color": "#ffffff"
+    },
+    {
+      "id": 4,
+      "name": "Team 04",
+      "color": "#000080"
+    },
+    {
+      "id": 5,
+      "name": "Team 05",
+      "color": "#000000"
+    },
+    {
+      "id": 6,
+      "name": "Team 06",
+      "color": "#ff0000"
+    }
+  ],
+  "exportedAt": "2026-08-31T00:00:00.000Z",
+  "version": "1.0"
+}
