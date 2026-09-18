@@ -3,32 +3,38 @@
     {
       "id": 1,
       "name": "Team 01",
-      "color": "#4f46e5"
+      "color": "#4f46e5",
+      "color_label": "Purple"
     },
     {
       "id": 2,
       "name": "Phaygo Pheasants",
-      "color": "#008000"
+      "color": "#008000",
+      "color_label": "Green"
     },
     {
       "id": 3,
       "name": "Pontiac Pollywogs",
-      "color": "#ffffff"
+      "color": "#ffffff",
+      "color_label": "White"
     },
     {
       "id": 4,
       "name": "Wombat on Wheels",
-      "color": "#000080"
+      "color": "#000080",
+      "color_label": "Navy Blue"
     },
     {
       "id": 5,
       "name": "Team 05",
-      "color": "#000000"
+      "color": "#000000",
+      "color_label": "Black"
     },
     {
       "id": 6,
       "name": "American Axle-otls",
-      "color": "#ff0000"
+      "color": "#ff0000",
+      "color_label": "Red"
     }
   ],
   "exportedAt": "2026-09-17T00:00:00.000Z",
