@@ -1,3 +1,8 @@
+---
+layout: default
+title: DUFL Score Board
+---
+
 # DUFL Score Board
 
 Use the Score Board to track an Ultimate Frisbee game. Open it in a modern
